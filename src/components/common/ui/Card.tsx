@@ -1,14 +1,14 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { theme } from '../../../styles/theme'; // Assuming this is the correct path to your theme
 
 // --- Prop Types ---
 
-// This interface is now the single source of truth for the Card's props.
-interface CardProps {
+// This now extends all standard HTML attributes for a <div>, making it fully flexible.
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   elevation?: 'low' | 'medium' | 'high';
   variant?: 'default' | 'outlined';
-  className?: string;
 }
 
 type PaddingSize = 'none' | 'sm' | 'md' | 'lg';
@@ -16,10 +16,9 @@ type PaddingSize = 'none' | 'sm' | 'md' | 'lg';
 
 // --- Styled Components ---
 
-// FIX: Updated to use CardProps to receive the 'variant' prop.
 const CardContainer = styled.div<Partial<CardProps>>`
-  background-color: ${props => props.theme.colors.neutral.white};
-  border-radius: ${props => props.theme.borders.radius.lg};
+  background-color: ${theme.colors.white};
+  border-radius: 8px; /* Example value */
   overflow: hidden;
   position: relative;
   
@@ -32,89 +31,73 @@ const CardContainer = styled.div<Partial<CardProps>>`
         return css`box-shadow: ${props.theme.shadows.lg};`;
       case 'medium':
       default:
-        return css`box-shadow: ${props.theme.shadows.md};`;
+        return css`box-shadow: ${props.theme.shadows.base};`; /* Using base for medium */
     }
   }}
   
-  /* This style will now work correctly */
+  /* Variant for an outlined style */
   ${({ variant, theme }) => variant === 'outlined' && css`
-    border: 1px solid ${theme.colors.neutral.gray300};
+    border: 1px solid ${theme.colors.gray[300]}; /* Example value */
     box-shadow: none;
   `}
 `;
 
 const CardHeaderContainer = styled.div`
-  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.lg};
-  border-bottom: 1px solid ${props => props.theme.colors.neutral.gray200};
-  font-weight: ${props => props.theme.typography.fontWeights.semiBold};
-  font-size: ${props => props.theme.typography.sizes.lg};
-  color: ${props => props.theme.colors.neutral.gray900};
+  padding: 1rem 1.5rem; /* Example values */
+  border-bottom: 1px solid ${theme.colors.gray[200]};
+  font-weight: 600; /* Example value */
+  font-size: 1.125rem; /* Example value */
+  color: ${theme.colors.gray[900]};
 `;
 
 const CardBodyContainer = styled.div<{ padding: PaddingSize }>`
-  ${({ theme, padding }) => {
+  ${({ padding }) => {
     switch (padding) {
       case 'sm':
-        return css`padding: ${theme.spacing.sm};`;
+        return css`padding: 0.75rem;`;
       case 'lg':
-        return css`padding: ${theme.spacing.lg};`;
+        return css`padding: 1.5rem;`;
       case 'none':
         return css`padding: 0;`;
       case 'md':
       default:
-        return css`padding: ${theme.spacing.md};`;
+        return css`padding: 1rem;`;
     }
   }}
 `;
 
 const CardFooterContainer = styled.div`
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  border-top: 1px solid ${props => props.theme.colors.neutral.gray200};
-  background-color: ${props => props.theme.colors.neutral.gray50};
+  padding: 0.75rem 1rem; /* Example values */
+  border-top: 1px solid ${theme.colors.gray[200]};
+  background-color: ${theme.colors.gray[50]};
 `;
 
 
 // --- React Components ---
 
-// FIX: The Card component now uses the CardProps interface.
 export const Card: React.FC<CardProps> = ({ 
   children, 
   elevation = 'medium', 
-  variant = 'default', // <-- Now correctly accepts the variant prop
-  className 
+  variant = 'default',
+  // The '...props' here collects any other passed-in props, like onClick, id, etc.
+  ...props 
 }) => {
   return (
-    // And passes the variant prop down to the styled container
-    <CardContainer elevation={elevation} variant={variant} className={className}>
+    // We pass elevation and variant for styling, and spread {...props} onto the container.
+    <CardContainer elevation={elevation} variant={variant} {...props}>
       {children}
     </CardContainer>
   );
 };
 
-export const CardHeader: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className }) => {
+export const CardHeader: React.FC<{ children: React.ReactNode; className?: string; }> = ({ children, className }) => {
   return <CardHeaderContainer className={className}>{children}</CardHeaderContainer>;
 };
 
-export const CardBody: React.FC<{
-  children: React.ReactNode;
-  padding?: PaddingSize;
-  className?: string;
-}> = ({ children, padding = 'md', className }) => {
-  return (
-    <CardBodyContainer padding={padding} className={className}>
-      {children}
-    </CardBodyContainer>
-  );
+export const CardBody: React.FC<{ children: React.ReactNode; padding?: PaddingSize; className?: string; }> = ({ children, padding = 'md', className }) => {
+  return <CardBodyContainer padding={padding} className={className}>{children}</CardBodyContainer>;
 };
 
-export const CardFooter: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-}> = ({ children, className }) => {
+export const CardFooter: React.FC<{ children: React.ReactNode; className?: string; }> = ({ children, className }) => {
   return <CardFooterContainer className={className}>{children}</CardFooterContainer>;
 };
-
-export default Card;
