@@ -1,41 +1,51 @@
 import React from 'react';
 import styled from 'styled-components';
+import { theme } from '../../../styles/theme';
 
-interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  variant?: 'default' | 'error';
-  fullWidth?: boolean;
-}
+const Wrapper = styled.div`
+  width: 100%;
+`;
 
-const StyledTextArea = styled.textarea<TextAreaProps>`
+const StyledTextArea = styled.textarea<{ hasError?: boolean }>`
+  width: 100%;
   padding: 0.75rem;
-  border: 1px solid ${props => props.variant === 'error' ? '#e53e3e' : '#e2e8f0'};
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  border: 1px solid ${({ hasError }) => (hasError ? theme.colors.error.main : theme.colors.neutral.gray300)};
+  border-radius: ${theme.borders.radius.md};
+  font-size: ${theme.typography.sizes.md};
+  color: ${theme.colors.neutral.gray900};
+  background-color: ${theme.colors.neutral.white};
   resize: vertical;
-  min-height: 100px;
-  font-family: inherit;
-  
+
   &:focus {
     outline: none;
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
-  }
-  
-  &::placeholder {
-    color: #a0aec0;
-  }
-  
-  &:disabled {
-    background-color: #f7fafc;
-    color: #a0aec0;
-    cursor: not-allowed;
+    border-color: ${theme.colors.primary.main};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary.light}30;
   }
 `;
 
-const TextArea: React.FC<TextAreaProps> = ({ fullWidth = true, ...props }) => {
-  return <StyledTextArea fullWidth={fullWidth} {...props} />;
-};
+const ErrorMessage = styled.p`
+  color: ${theme.colors.error.main};
+  font-size: ${theme.typography.sizes.sm};
+  margin-top: 0.25rem;
+`;
+
+// FIX 1: Add 'error' (boolean) and 'errorText' (string) to the props interface.
+export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  error?: boolean;
+  errorText?: string;
+}
+
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  // FIX 2: Destructure the new props.
+  ({ error, errorText, ...props }, ref) => {
+    return (
+      <Wrapper>
+        <StyledTextArea hasError={error} ref={ref} {...props} />
+        {/* FIX 3: Conditionally render the error message. */}
+        {error && errorText && <ErrorMessage>{errorText}</ErrorMessage>}
+      </Wrapper>
+    );
+  }
+);
 
 export default TextArea;

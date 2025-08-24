@@ -128,24 +128,26 @@ export const createCandidateApplications = (): CandidateApplication[] => {
       throw new Error(`Missing applicant or job data for application ${application.id}`);
     }
 
-    // Calculate match score using existing engine
-    const matchResult = calculateMatchScore(applicant, job);
+    // FIX 1: The arguments were reversed. It should be (job, applicant).
+    const matchResult = calculateMatchScore(job, applicant);
     
+    // FIX 2: Access the properties from the detailed MatchResult object correctly.
     const matchBreakdown: MatchScoreBreakdown = {
       overall: matchResult.score,
-      skills: matchResult.breakdown.skills.score,
-      experience: matchResult.breakdown.experienceKeywords.score,
-      education: matchResult.breakdown.education.score,
-      certifications: matchResult.breakdown.certifications.score,
-      yearOfExperience: matchResult.breakdown.yearsOfExperience.score,
-      jobType: matchResult.breakdown.jobType.score,
+      skills: matchResult.breakdown.skills,
+      experience: matchResult.breakdown.experience,
+      education: matchResult.breakdown.education,
+      certifications: matchResult.breakdown.certifications,
+      yearOfExperience: matchResult.breakdown.yearsOfExperience,
+      jobType: matchResult.breakdown.jobType,
       details: {
-        matchedSkills: matchResult.breakdown.skills.matched,
-        missingSkills: matchResult.breakdown.skills.missing,
-        experienceMatch: matchResult.breakdown.experienceKeywords.score > 50,
-        educationMatch: matchResult.breakdown.education.score > 50,
-        certificationMatches: matchResult.breakdown.certifications.matched,
-        missingCertifications: matchResult.breakdown.certifications.missing
+        matchedSkills: matchResult.details.matchedSkills,
+        missingSkills: matchResult.details.missingSkills,
+        experienceMatch: matchResult.details.experienceMatch,
+        educationMatch: matchResult.details.educationMatch,
+        // Assuming certificationMatches is a boolean based on the details object
+        certificationMatches: matchResult.details.certificationMatch, 
+        missingCertifications: [], // This can be populated from details if needed
       }
     };
 

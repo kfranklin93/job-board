@@ -2,6 +2,7 @@
 import Button from './Button';
 import Input from './Input';
 import TextArea from './TextArea';
+import Select from  './Select'; 
 import ProfilePictureUpload from './ProfilePictureUpload';
 import { Card, CardHeader, CardBody, CardFooter } from './Card';
 
@@ -23,3 +24,7 @@ export * from './Card';
 export * from './Input';
 
 // Additional components can be added here as they are created
+// FIX: Add this line to export your Select component
+// Additional components can be added here as they are created
+// FIX: Add this line to export your Select component
+export { Select } from './Select'; 
