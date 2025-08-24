@@ -145,9 +145,13 @@ export const createCandidateApplications = (): CandidateApplication[] => {
         missingSkills: matchResult.details.missingSkills,
         experienceMatch: matchResult.details.experienceMatch,
         educationMatch: matchResult.details.educationMatch,
-        // Assuming certificationMatches is a boolean based on the details object
-        certificationMatches: matchResult.details.certificationMatch, 
-        missingCertifications: [], // This can be populated from details if needed
+        // FIX: Use the 'matchedCertifications' array (string[]) from the details object,
+        // which matches the expected type for 'certificationMatches'.
+        certificationMatches: matchResult.details.matchedCertifications, 
+        
+        // Use the 'missingCertifications' array from the details object as well.
+        missingCertifications: matchResult.details.missingCertifications,
+        
       }
     };
 

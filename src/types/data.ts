@@ -255,7 +255,7 @@ export interface MatchScoreBreakdown {
     missingSkills: string[];
     experienceMatch: boolean;
     educationMatch: boolean;
-    certificationMatches: string[];
+    certificationMatches:string[];
     missingCertifications: string[];
   };
 }

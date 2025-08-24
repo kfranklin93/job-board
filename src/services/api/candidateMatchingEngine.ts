@@ -20,7 +20,7 @@ export interface MatchResult {
     missingSkills: string[];
     experienceMatch: boolean;
     educationMatch: boolean;
-    certificationMatch: string[];
+    certificationMatch: boolean;
     yearsMatch: boolean;
     matchedCertifications: string[];
     missingCertifications: string[];
