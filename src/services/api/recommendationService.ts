@@ -1,6 +1,6 @@
 // src/services/recommendationService.ts
 
-import { Job, UserProfile } from '../types/data';
+import { Job, UserProfile } from '../../types/data';
 import { calculateMatchScore } from './candidateMatchingEngine';
 
 // Type for a candidate enriched with their match score

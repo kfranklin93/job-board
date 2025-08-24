@@ -1,6 +1,6 @@
 import { mockJobs } from './data/mockJobs';
-import { generateOrganizationRecommendations } from './lib/recommendationReports';
-import { UserProfile } from './types/data'; // Assuming types are in a root 'types' folder
+import { generateOrganizationRecommendations } from './services/api/recommendationReports';
+import { UserProfile, Education } from './types/data'; // Assuming types are in a root 'types' folder
 
 // Helper function to safely get the candidate's most recent job title
 const getCurrentTitle = (candidate: UserProfile): string => {
@@ -70,7 +70,7 @@ const formatRecommendationReports = () => {
         reportText += `**Current Title:** ${getCurrentTitle(candidate)}\n`;
         reportText += `**Location:** ${candidate.location ?? 'N/A'}\n`;
         reportText += `**Experience:** ${candidate.yearsOfExperience ?? 0} years\n`;
-        reportText += `**Education:** ${candidate.education?.map(edu => edu.degree).join(', ') ?? 'N/A'}\n`;
+        reportText += `**Education:** ${candidate.education?.map((edu: Education) => edu.degree).join(', ') ?? 'N/A'}\n`;
         reportText += `**Key Skills:** ${candidate.skills?.slice(0, 5).join(', ') ?? 'N/A'}\n\n`;
         
         reportText += `**Key Strengths:**\n`;

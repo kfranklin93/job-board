@@ -1,15 +1,15 @@
 // src/demo/recommendationEngineDemo.ts
 // Demonstration of the Daycare Staffing & Recommendation Engine
 
-import { mockJobs } from '../data/mockJobs';
-import { mockJobSeekers } from '../data/mockJobSeekers';
-import { mockRecruiters } from '../data/mockRecruiters';
-import { calculateMatchScore } from '../services/candidateMatchingEngine';
+import { mockJobs } from '../../data/mockJobs';
+import { mockJobSeekers } from '../../data/mockJobSeekers';
+import { mockRecruiters } from '../../data/mockRecruiters';
+import { calculateMatchScore } from '../../services/api/candidateMatchingEngine';
 import { 
   getRecommendationsForJob, 
   generateStrengthsAndGaps, 
   generateRecommendationSummary 
-} from '../services/recommendationService';
+} from '../../services/api/recommendationService';
 
 console.log('🎯 DAYCARE STAFFING & RECOMMENDATION ENGINE DEMO');
 console.log('================================================');

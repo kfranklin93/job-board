@@ -1,9 +1,9 @@
 // src/lib/recommendationReports.ts
 
-import { mockJobs } from '../data/mockJobs';
-import { mockJobSeekers } from '../data/mockJobSeekers';
-import { getRecommendationsForJob, RecommendedCandidate } from '../services/recommendationService';
-import { Job, UserProfile } from '../types/data';
+import { mockJobs } from '../../data/mockJobs';
+import { mockJobSeekers } from '../../data/mockJobSeekers';
+import { getRecommendationsForJob, RecommendedCandidate } from './recommendationService';
+import { Job, UserProfile } from '../../types/data';
 
 // Using the RecommendedCandidate type from the service
 

@@ -150,3 +150,68 @@ export interface Review {
   comment: string;
   date: string;
 }
+
+// Authentication types
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  phone?: string;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  avatar?: string;
+}
+
+export interface AuthToken {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+  tokens: AuthToken;
+}
+
+// Role-specific profile types
+export interface JobSeekerProfile extends UserProfile {
+  role: UserRole.SEEKER;
+  seekingJobTypes: JobType[];
+  desiredSalaryRange: {
+    min: number;
+    max: number;
+  };
+  willingToRelocate: boolean;
+  preferredLocations: string[];
+}
+
+export interface DaycareProfile extends UserProfile {
+  role: UserRole.DAYCARE;
+  organizationId: string;
+  organization: Organization;
+  hiringAuthority: boolean;
+  canPostJobs: boolean;
+}
+
+export interface RecruiterProfile extends UserProfile {
+  role: UserRole.RECRUITER;
+  company: string;
+  partnerDaycares: string[]; // Organization IDs
+  specializations: string[];
+  yearsInRecruitment: number;
+  canAccessReports: boolean;
+}

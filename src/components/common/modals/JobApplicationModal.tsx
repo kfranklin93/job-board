@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, Card, CardHeader, CardBody, CardFooter, Input, TextArea} from '../../components/ui';
-import { Job } from '../../types/data';
-import { UserProfile } from '../../types/data';
-import ProfilePictureUpload from '../../components/ui/ProfilePictureUpload';
+import { Button, Card, CardHeader, CardBody, CardFooter, Input, TextArea} from '../ui';
+import { Job } from '../../../types/data';
+import { UserProfile } from '../../../types/data';
+import ProfilePictureUpload from '../ui/ProfilePictureUpload';
 
 interface JobApplicationModalProps {
   job: Job;

@@ -1,6 +1,6 @@
 // src/services/candidateMatchingEngine.ts
 
-import { Job, UserProfile } from '../types/data';
+import { Job, UserProfile } from '../../types/data';
 
 /**
  * Calculates skills match score between job requirements and candidate skills
