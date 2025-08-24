@@ -114,50 +114,116 @@ function App() {
               } />
 
               {/* Protected routes */}
-              <Route path="/" element={
+              <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Navigation />
                   <MainContent>
-                    <Routes>
-                      {/* Dashboard route */}
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      
-                      {/* Common routes */}
-                      <Route path="/profile" element={<ProfilePage />} />
-                      <Route path="/settings" element={<SettingsPage />} />
-                      
-                      {/* Job Seeker routes */}
-                      <Route path="/jobs" element={<JobsPage />} />
-                      <Route path="/applications" element={<ApplicationsPage />} />
-                      
-                      {/* Daycare Organization routes */}
-                      <Route path="/post-job" element={<PostJobPage />} />
-                      <Route path="/candidates" element={<CandidatesPage />} />
-                      <Route path="/my-jobs" element={<MyJobsPage />} />
-                      <Route path="/organization" element={<OrganizationPage />} />
-                      
-                      {/* Recruiter routes */}
-                      <Route path="/reports" element={<ReportsPage />} />
-                      <Route path="/partners" element={<PartnersPage />} />
-                      <Route path="/analytics" element={<AnalyticsPage />} />
-                      
-                      {/* Default redirect */}
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                      
-                      {/* 404 Page */}
-                      <Route path="*" element={
-                        <NotFoundPage>
-                          <h1>Page Not Found</h1>
-                          <p>The page you're looking for doesn't exist.</p>
-                          <Button onClick={() => window.history.back()}>
-                            Go Back
-                          </Button>
-                        </NotFoundPage>
-                      } />
-                    </Routes>
+                    <Dashboard />
                   </MainContent>
                 </ProtectedRoute>
               } />
+              
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <ProfilePage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <SettingsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/jobs" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <JobsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/applications" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <ApplicationsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/post-job" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <PostJobPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/candidates" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <CandidatesPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/my-jobs" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <MyJobsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/organization" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <OrganizationPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/reports" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <ReportsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/partners" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <PartnersPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/analytics" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <AnalyticsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+              
+              {/* Root redirect */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
               {/* Unauthorized access page */}
               <Route path="/unauthorized" element={

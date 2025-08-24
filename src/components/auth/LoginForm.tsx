@@ -65,6 +65,23 @@ const DemoCredentials = styled.div`
   
   div {
     margin-bottom: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;
+
+const DemoButton = styled.button`
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  
+  &:hover {
+    background: #2980b9;
   }
 `;
 
@@ -78,17 +95,26 @@ export const LoginForm: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<LoginCredentials>();
+
+  // Debug: watch form values (comment out for production)
+  // const watchedValues = watch();
+  // console.log('Current form values:', watchedValues);
+  // console.log('Current form errors:', errors);
 
   const from = location.state?.from?.pathname || '/dashboard';
 
   const onSubmit = async (data: LoginCredentials) => {
     try {
+      console.log('Form submitted with data:', data);
       clearError();
       await login(data);
       navigate(from, { replace: true });
     } catch (err) {
+      console.error('Login error:', err);
       // Error is handled by the auth context
     }
   };
@@ -101,8 +127,14 @@ export const LoginForm: React.FC = () => {
     };
 
     const demo = credentials[userType];
-    (document.getElementById('email') as HTMLInputElement).value = demo.email;
-    (document.getElementById('password') as HTMLInputElement).value = demo.password;
+    console.log('Setting demo credentials:', demo);
+    
+    // Use react-hook-form's setValue instead of direct DOM manipulation
+    setValue('email', demo.email, { shouldValidate: true });
+    setValue('password', demo.password, { shouldValidate: true });
+    
+    // Clear any existing errors
+    clearError();
   };
 
   return (
@@ -112,22 +144,22 @@ export const LoginForm: React.FC = () => {
       <DemoCredentials>
         <h4>Demo Accounts:</h4>
         <div>
-          <strong>Job Seeker:</strong>{' '}
-          <button type="button" onClick={() => fillDemoCredentials('jobseeker')}>
+          <strong>Job Seeker</strong>
+          <DemoButton type="button" onClick={() => fillDemoCredentials('jobseeker')}>
             Use Demo
-          </button>
+          </DemoButton>
         </div>
         <div>
-          <strong>Daycare:</strong>{' '}
-          <button type="button" onClick={() => fillDemoCredentials('daycare')}>
+          <strong>Daycare</strong>
+          <DemoButton type="button" onClick={() => fillDemoCredentials('daycare')}>
             Use Demo
-          </button>
+          </DemoButton>
         </div>
         <div>
-          <strong>Recruiter:</strong>{' '}
-          <button type="button" onClick={() => fillDemoCredentials('recruiter')}>
+          <strong>Recruiter</strong>
+          <DemoButton type="button" onClick={() => fillDemoCredentials('recruiter')}>
             Use Demo
-          </button>
+          </DemoButton>
         </div>
       </DemoCredentials>
 

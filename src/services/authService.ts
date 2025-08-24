@@ -147,10 +147,12 @@ export const authService = {
   // Login user
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      console.log('AuthService.login called with:', credentials);
       // Mock implementation - replace with real API call
       const mockUser = MOCK_USERS.find(
         u => u.email === credentials.email && u.password === credentials.password
       );
+      console.log('Found mock user:', mockUser);
 
       if (!mockUser) {
         throw new Error('Invalid email or password');

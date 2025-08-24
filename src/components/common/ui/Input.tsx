@@ -126,7 +126,7 @@ const HelperText = styled.span<{ error?: boolean }>`
 `;
 
 // Input component
-const Input: React.FC<InputProps> = ({
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   label,
   helperText,
   error = false,
@@ -138,7 +138,7 @@ const Input: React.FC<InputProps> = ({
   size = 'medium',
   className,
   ...props
-}) => {
+}, ref) => {
   return (
     <InputContainer fullWidth={fullWidth} className={className}>
       {label && <InputLabel error={error}>{label}</InputLabel>}
@@ -151,6 +151,7 @@ const Input: React.FC<InputProps> = ({
         )}
         
         <StyledInput
+          ref={ref}
           error={error}
           success={success}
           hasStartIcon={!!startIcon}
@@ -173,6 +174,8 @@ const Input: React.FC<InputProps> = ({
       )}
     </InputContainer>
   );
-};
+});
+
+Input.displayName = 'Input';
 
 export default Input;

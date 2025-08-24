@@ -98,10 +98,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (user) {
           dispatch({ type: 'AUTH_SUCCESS', payload: user });
         } else {
-          dispatch({ type: 'AUTH_FAILURE', payload: 'No valid session found' });
+          // Don't show error for no session on initial load
+          dispatch({ type: 'LOGOUT' });
         }
       } catch (error) {
-        dispatch({ type: 'AUTH_FAILURE', payload: 'Failed to initialize authentication' });
+        // Don't show error for initialization issues
+        dispatch({ type: 'LOGOUT' });
       }
     };
 
