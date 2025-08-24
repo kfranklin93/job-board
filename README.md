@@ -82,3 +82,5 @@ src/
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+# job-board
+this app is to allow daycares to vet the users and recruiters to send top candidates to daycares
