@@ -20,8 +20,10 @@ export interface MatchResult {
     missingSkills: string[];
     experienceMatch: boolean;
     educationMatch: boolean;
-    certificationMatch: boolean;
+    certificationMatch: string[];
     yearsMatch: boolean;
+    matchedCertifications: string[];
+    missingCertifications: string[];
   };
 }
 
@@ -227,6 +229,8 @@ export function calculateMatchScore(job: Job, candidate: UserProfile): MatchResu
       educationMatch: educationResult.match,
       certificationMatch: certsResult.match,
       yearsMatch: yearsResult.match,
+      matchedCertifications: certsResult.matched,
+      missingCertifications: certsResult.missing,
     }
   };
 }
