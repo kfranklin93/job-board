@@ -46,6 +46,7 @@ export interface Experience {
   startDate: string;
   endDate: string;
   description?: string;
+  skills?: string[];
 }
 
 export interface Education {
@@ -69,6 +70,13 @@ export interface Job {
   status: JobStatus;
   postedDate?: string;
   applicantCount?: number;
+  
+  // Matching fields
+  requiredSkills?: string[];
+  requiredCertifications?: string[];
+  educationLevelRequired?: string;
+  yearsOfExperienceRequired?: number;
+  desiredJobType?: JobType;
 }
 
 export interface Application {
@@ -214,4 +222,76 @@ export interface RecruiterProfile extends UserProfile {
   specializations: string[];
   yearsInRecruitment: number;
   canAccessReports: boolean;
+}
+
+// --- Candidate Management Types ---
+
+export interface CandidateApplication {
+  id: string;
+  jobId: string;
+  job: Job;
+  applicant: UserProfile;
+  application: Application;
+  matchScore: number;
+  matchBreakdown?: MatchScoreBreakdown;
+  notes?: string[];
+  tags?: string[];
+  interviewScheduled?: boolean;
+  interviewDate?: string;
+  resumeUrl?: string;
+  portfolioUrl?: string;
+}
+
+export interface MatchScoreBreakdown {
+  overall: number;
+  skills: number;
+  experience: number;
+  education: number;
+  certifications: number;
+  yearOfExperience: number;
+  jobType: number;
+  details: {
+    matchedSkills: string[];
+    missingSkills: string[];
+    experienceMatch: boolean;
+    educationMatch: boolean;
+    certificationMatches: string[];
+    missingCertifications: string[];
+  };
+}
+
+export interface CandidateFilters {
+  searchQuery?: string;
+  matchScoreRange?: {
+    min: number;
+    max: number;
+  };
+  applicationStatus?: ApplicationStatus[];
+  experienceLevel?: string[];
+  educationLevel?: string[];
+  requiredCertifications?: string[];
+  availability?: JobType[];
+  appliedDateRange?: {
+    start: string;
+    end: string;
+  };
+  tags?: string[];
+}
+
+export interface CandidateSortOptions {
+  field: 'matchScore' | 'appliedDate' | 'lastName' | 'experience' | 'education';
+  direction: 'asc' | 'desc';
+}
+
+export interface BulkAction {
+  type: 'STATUS_UPDATE' | 'ADD_TAG' | 'REMOVE_TAG' | 'ADD_NOTE' | 'SCHEDULE_INTERVIEW' | 'EXPORT' | 'EMAIL';
+  payload?: any;
+}
+
+export interface CandidateStats {
+  total: number;
+  byStatus: Record<ApplicationStatus, number>;
+  averageMatchScore: number;
+  topMatchScore: number;
+  recentApplications: number; // Last 7 days
 }

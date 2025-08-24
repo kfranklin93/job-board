@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../context/AuthContext';
 
@@ -215,6 +216,7 @@ const ActionButton = styled.button`
 
 export const DaycareDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock data - replace with real data from API
   const stats = {
@@ -281,6 +283,9 @@ export const DaycareDashboard: React.FC = () => {
 
       <ActionBar>
         <PrimaryButton>+ Post New Job</PrimaryButton>
+        <SecondaryButton onClick={() => navigate('/daycare/candidates')}>
+          Manage Candidates
+        </SecondaryButton>
         <SecondaryButton>Browse Candidates</SecondaryButton>
         <SecondaryButton>View All Applications</SecondaryButton>
       </ActionBar>

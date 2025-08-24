@@ -1,0 +1,204 @@
+// src/data/mockApplications.ts
+
+import { 
+  CandidateApplication, 
+  Application, 
+  ApplicationStatus, 
+  MatchScoreBreakdown,
+  CandidateStats 
+} from '../types/data';
+import { mockJobSeekers } from './mockJobSeekers';
+import { mockJobs } from './mockJobs';
+import { calculateMatchScore } from '../services/api/candidateMatchingEngine';
+
+// Mock Applications Data
+export const mockApplications: Application[] = [
+  {
+    id: 'app-001',
+    jobId: 'job-001', // Lead Preschool Teacher
+    jobTitle: 'Lead Preschool Teacher',
+    organizationId: 'org-001',
+    organizationName: 'Sunshine Daycare Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
+    applicantId: 'user-seeker-001', // Sarah Johnson
+    applicantName: 'Sarah Johnson',
+    applicantEmail: 'sarah.johnson@email.com',
+    applicantPhone: '+1-555-0101',
+    status: ApplicationStatus.REVIEWING,
+    appliedDate: '2024-08-20T10:30:00Z',
+    lastUpdated: '2024-08-22T14:15:00Z',
+    notes: 'Strong background in curriculum development. Very positive phone screen.',
+    resume: '/uploads/sarah-johnson-resume.pdf',
+    coverLetter: 'I am excited to bring my 5 years of preschool experience to your team...'
+  },
+  {
+    id: 'app-002',
+    jobId: 'job-002', // Special Education Teacher  
+    jobTitle: 'Special Education Teacher',
+    organizationId: 'org-001',
+    organizationName: 'Sunshine Daycare Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
+    applicantId: 'user-seeker-002', // Michael Chen
+    applicantName: 'Michael Chen',
+    applicantEmail: 'michael.chen@email.com',
+    applicantPhone: '+1-555-0102',
+    status: ApplicationStatus.INTERVIEW_SCHEDULED,
+    appliedDate: '2024-08-18T14:20:00Z',
+    lastUpdated: '2024-08-23T09:30:00Z',
+    notes: 'Perfect match for special education role. Interview scheduled for Monday.',
+    resume: '/uploads/michael-chen-resume.pdf'
+  },
+  {
+    id: 'app-003',
+    jobId: 'job-003', // Assistant Teacher
+    jobTitle: 'Assistant Teacher',
+    organizationId: 'org-001', 
+    organizationName: 'Sunshine Daycare Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
+    applicantId: 'user-seeker-003', // Jessica Williams
+    applicantName: 'Jessica Williams',
+    applicantEmail: 'jessica.williams@email.com',
+    applicantPhone: '+1-555-0103',
+    status: ApplicationStatus.APPLIED,
+    appliedDate: '2024-08-24T11:15:00Z',
+    lastUpdated: '2024-08-24T11:15:00Z',
+    notes: 'Recent graduate, eager to start career.',
+    resume: '/uploads/jessica-williams-resume.pdf'
+  },
+  {
+    id: 'app-004',
+    jobId: 'job-005', // Center Director
+    jobTitle: 'Center Director',
+    organizationId: 'org-002',
+    organizationName: 'Little Learners Academy',
+    organizationLogo: 'https://via.placeholder.com/150x150/2196F3/white?text=LLA',
+    applicantId: 'user-seeker-004', // Amanda Taylor
+    applicantName: 'Amanda Taylor',
+    applicantEmail: 'amanda.taylor@email.com',
+    applicantPhone: '+1-555-0104',
+    status: ApplicationStatus.OFFERED,
+    appliedDate: '2024-08-15T16:45:00Z',
+    lastUpdated: '2024-08-23T17:20:00Z',
+    notes: 'Excellent leadership experience. Made competitive offer.',
+    resume: '/uploads/amanda-taylor-resume.pdf'
+  },
+  {
+    id: 'app-005',
+    jobId: 'job-001', // Lead Preschool Teacher (another applicant)
+    jobTitle: 'Lead Preschool Teacher',
+    organizationId: 'org-001',
+    organizationName: 'Sunshine Daycare Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
+    applicantId: 'user-seeker-002', // Michael Chen also applied
+    applicantName: 'Michael Chen',
+    applicantEmail: 'michael.chen@email.com', 
+    applicantPhone: '+1-555-0102',
+    status: ApplicationStatus.APPLIED,
+    appliedDate: '2024-08-19T09:10:00Z',
+    lastUpdated: '2024-08-19T09:10:00Z',
+    notes: 'Also applied for lead position.',
+    resume: '/uploads/michael-chen-resume.pdf'
+  },
+  {
+    id: 'app-006',
+    jobId: 'job-004', // Part-Time Infant Teacher
+    jobTitle: 'Part-Time Infant Teacher',
+    organizationId: 'org-001',
+    organizationName: 'Sunshine Daycare Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
+    applicantId: 'user-seeker-003', // Jessica Williams
+    applicantName: 'Jessica Williams',
+    applicantEmail: 'jessica.williams@email.com',
+    applicantPhone: '+1-555-0103',
+    status: ApplicationStatus.REJECTED,
+    appliedDate: '2024-08-16T13:25:00Z',
+    lastUpdated: '2024-08-21T10:45:00Z',
+    notes: 'Lacks specific infant care experience.',
+    resume: '/uploads/jessica-williams-resume.pdf'
+  }
+];
+
+// Helper function to create CandidateApplication objects
+export const createCandidateApplications = (): CandidateApplication[] => {
+  return mockApplications.map(application => {
+    const applicant = mockJobSeekers.find(seeker => seeker.id === application.applicantId);
+    const job = mockJobs.find(j => j.id === application.jobId);
+    
+    if (!applicant || !job) {
+      throw new Error(`Missing applicant or job data for application ${application.id}`);
+    }
+
+    // Calculate match score using existing engine
+    const matchResult = calculateMatchScore(applicant, job);
+    
+    const matchBreakdown: MatchScoreBreakdown = {
+      overall: matchResult.score,
+      skills: matchResult.breakdown.skills.score,
+      experience: matchResult.breakdown.experienceKeywords.score,
+      education: matchResult.breakdown.education.score,
+      certifications: matchResult.breakdown.certifications.score,
+      yearOfExperience: matchResult.breakdown.yearsOfExperience.score,
+      jobType: matchResult.breakdown.jobType.score,
+      details: {
+        matchedSkills: matchResult.breakdown.skills.matched,
+        missingSkills: matchResult.breakdown.skills.missing,
+        experienceMatch: matchResult.breakdown.experienceKeywords.score > 50,
+        educationMatch: matchResult.breakdown.education.score > 50,
+        certificationMatches: matchResult.breakdown.certifications.matched,
+        missingCertifications: matchResult.breakdown.certifications.missing
+      }
+    };
+
+    return {
+      id: application.id,
+      jobId: application.jobId,
+      job,
+      applicant,
+      application,
+      matchScore: matchResult.score,
+      matchBreakdown,
+      notes: application.notes ? [application.notes] : [],
+      tags: generateTags(matchResult.score, application.status),
+      interviewScheduled: application.status === ApplicationStatus.INTERVIEW_SCHEDULED,
+      interviewDate: application.status === ApplicationStatus.INTERVIEW_SCHEDULED ? '2024-08-26T14:00:00Z' : undefined,
+      resumeUrl: application.resume,
+      portfolioUrl: undefined
+    };
+  });
+};
+
+// Helper function to generate relevant tags
+const generateTags = (matchScore: number, status: ApplicationStatus): string[] => {
+  const tags: string[] = [];
+  
+  if (matchScore >= 90) tags.push('Top Match');
+  else if (matchScore >= 80) tags.push('Strong Match');
+  else if (matchScore >= 70) tags.push('Good Match');
+  else tags.push('Needs Review');
+  
+  if (status === ApplicationStatus.INTERVIEW_SCHEDULED) tags.push('Interview Scheduled');
+  if (status === ApplicationStatus.OFFERED) tags.push('Offer Extended');
+  
+  return tags;
+};
+
+// Mock candidate statistics
+export const mockCandidateStats: CandidateStats = {
+  total: mockApplications.length,
+  byStatus: {
+    [ApplicationStatus.APPLIED]: 2,
+    [ApplicationStatus.REVIEWING]: 1,
+    [ApplicationStatus.INTERVIEW_SCHEDULED]: 1,
+    [ApplicationStatus.INTERVIEW_COMPLETED]: 0,
+    [ApplicationStatus.OFFERED]: 1,
+    [ApplicationStatus.HIRED]: 0,
+    [ApplicationStatus.REJECTED]: 1,
+    [ApplicationStatus.WITHDRAWN]: 0
+  },
+  averageMatchScore: 82.5,
+  topMatchScore: 95,
+  recentApplications: 3 // Last 7 days
+};
+
+// Export the generated candidate applications
+export const mockCandidateApplications = createCandidateApplications();

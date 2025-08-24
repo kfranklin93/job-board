@@ -96,7 +96,6 @@ export const LoginForm: React.FC = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<LoginCredentials>();
 
@@ -109,12 +108,10 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginCredentials) => {
     try {
-      console.log('Form submitted with data:', data);
       clearError();
       await login(data);
       navigate(from, { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
       // Error is handled by the auth context
     }
   };
@@ -127,7 +124,6 @@ export const LoginForm: React.FC = () => {
     };
 
     const demo = credentials[userType];
-    console.log('Setting demo credentials:', demo);
     
     // Use react-hook-form's setValue instead of direct DOM manipulation
     setValue('email', demo.email, { shouldValidate: true });

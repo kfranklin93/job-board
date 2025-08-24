@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from 'styled-components';
 import { AuthProvider } from './context/AuthContext';
 import { theme } from './styles/theme';
+import { UserRole } from './types/data';
 
 // Auth components
 import { AuthLayout } from './components/auth/AuthLayout';
@@ -15,6 +16,12 @@ import { Navigation } from './components/navigation/Navigation';
 
 // Dashboards
 import { Dashboard } from './components/dashboards/Dashboard';
+
+// Matching Demo
+import { MatchingDemo } from './components/matching/MatchingDemo';
+
+// Daycare Components
+import CandidateManagementDashboard from './components/daycare/CandidateManagementDashboard';
 
 // Layout components
 import styled from 'styled-components';
@@ -218,6 +225,26 @@ function App() {
                   <Navigation />
                   <MainContent>
                     <AnalyticsPage />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+
+              {/* Matching Demo Route */}
+              <Route path="/matching-demo" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <MainContent>
+                    <MatchingDemo />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+
+              {/* Daycare Routes */}
+              <Route path="/daycare/candidates" element={
+                <ProtectedRoute allowedRoles={[UserRole.DAYCARE]}>
+                  <Navigation />
+                  <MainContent>
+                    <CandidateManagementDashboard />
                   </MainContent>
                 </ProtectedRoute>
               } />

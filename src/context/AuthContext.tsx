@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { AuthUser, AuthResponse, LoginCredentials, RegisterData, UserRole } from '../types/data';
+import { AuthUser, AuthResponse, LoginCredentials, RegisterData, UserRole, UserProfile } from '../types/data';
 import { authService } from '../services/authService';
 
 // Auth state interface
 interface AuthState {
   user: AuthUser | null;
+  userProfile: UserProfile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -13,10 +14,11 @@ interface AuthState {
 // Auth actions
 type AuthAction =
   | { type: 'AUTH_START' }
-  | { type: 'AUTH_SUCCESS'; payload: AuthUser }
+  | { type: 'AUTH_SUCCESS'; payload: { user: AuthUser; profile?: UserProfile } }
   | { type: 'AUTH_FAILURE'; payload: string }
   | { type: 'LOGOUT' }
-  | { type: 'CLEAR_ERROR' };
+  | { type: 'CLEAR_ERROR' }
+  | { type: 'UPDATE_PROFILE'; payload: UserProfile };
 
 // Auth context interface
 interface AuthContextType extends AuthState {
@@ -24,11 +26,13 @@ interface AuthContextType extends AuthState {
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  updateProfile: (profile: UserProfile) => void;
 }
 
 // Initial state
 const initialState: AuthState = {
   user: null,
+  userProfile: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
@@ -46,7 +50,8 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case 'AUTH_SUCCESS':
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.user,
+        userProfile: action.payload.profile || null,
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -55,6 +60,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       return {
         ...state,
         user: null,
+        userProfile: null,
         isAuthenticated: false,
         isLoading: false,
         error: action.payload,
@@ -63,9 +69,15 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       return {
         ...state,
         user: null,
+        userProfile: null,
         isAuthenticated: false,
         isLoading: false,
         error: null,
+      };
+    case 'UPDATE_PROFILE':
+      return {
+        ...state,
+        userProfile: action.payload,
       };
     case 'CLEAR_ERROR':
       return {
@@ -96,7 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dispatch({ type: 'AUTH_START' });
         const user = await authService.getCurrentUser();
         if (user) {
-          dispatch({ type: 'AUTH_SUCCESS', payload: user });
+          dispatch({ type: 'AUTH_SUCCESS', payload: { user } });
         } else {
           // Don't show error for no session on initial load
           dispatch({ type: 'LOGOUT' });
@@ -115,7 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       dispatch({ type: 'AUTH_START' });
       const response: AuthResponse = await authService.login(credentials);
-      dispatch({ type: 'AUTH_SUCCESS', payload: response.user });
+      dispatch({ type: 'AUTH_SUCCESS', payload: { user: response.user } });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
       dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
@@ -128,7 +140,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       dispatch({ type: 'AUTH_START' });
       const response: AuthResponse = await authService.register(data);
-      dispatch({ type: 'AUTH_SUCCESS', payload: response.user });
+      dispatch({ type: 'AUTH_SUCCESS', payload: { user: response.user } });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       dispatch({ type: 'AUTH_FAILURE', payload: errorMessage });
@@ -147,12 +159,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({ type: 'CLEAR_ERROR' });
   };
 
+  // Update profile function
+  const updateProfile = (profile: UserProfile): void => {
+    dispatch({ type: 'UPDATE_PROFILE', payload: profile });
+    // Persist to localStorage
+    localStorage.setItem('daycare_user_profile', JSON.stringify(profile));
+  };
+
   const value: AuthContextType = {
     ...state,
     login,
     register,
     logout,
     clearError,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

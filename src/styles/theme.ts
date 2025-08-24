@@ -60,7 +60,25 @@ export const theme = {
       light: '#64B5F6',
       dark: '#1976D2',
       contrastText: '#FFFFFF'
-    }
+    },
+
+    // Background colors
+    background: {
+      main: '#FFFFFF',
+      light: '#F5F5F5',
+      dark: '#EEEEEE',
+      paper: '#FFFFFF'
+    },
+
+    // Text colors
+    text: {
+      primary: '#212121',
+      secondary: '#757575',
+      disabled: '#BDBDBD'
+    },
+
+    // Border color
+    border: '#E0E0E0'
   },
   
   // Typography

@@ -21,7 +21,7 @@ export const getRecommendationsForJob = (
   // Calculate match scores for all candidates
   const candidatesWithScores: RecommendedCandidate[] = candidates.map(candidate => ({
     ...candidate,
-    matchScore: calculateMatchScore(job, candidate)
+    matchScore: calculateMatchScore(job, candidate).score
   }));
 
   // Sort by match score (highest first) and return top N
