@@ -1,10 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { theme } from '../../../styles/theme'; // Assuming this is the correct path to your theme
+import { theme } from '../../../styles/theme';
 
 // --- Prop Types ---
 
-// This now extends all standard HTML attributes for a <div>, making it fully flexible.
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   elevation?: 'low' | 'medium' | 'high';
@@ -17,8 +16,9 @@ type PaddingSize = 'none' | 'sm' | 'md' | 'lg';
 // --- Styled Components ---
 
 const CardContainer = styled.div<Partial<CardProps>>`
-  background-color: ${theme.colors.white};
-  border-radius: 8px; /* Example value */
+  /* FIX: 'white' is inside the 'neutral' color object */
+  background-color: ${theme.colors.neutral.white};
+  border-radius: ${theme.borders.radius.lg};
   overflow: hidden;
   position: relative;
   
@@ -31,45 +31,49 @@ const CardContainer = styled.div<Partial<CardProps>>`
         return css`box-shadow: ${props.theme.shadows.lg};`;
       case 'medium':
       default:
-        return css`box-shadow: ${props.theme.shadows.base};`; /* Using base for medium */
+        /* FIX: The 'base' shadow was renamed to 'md' in your theme */
+        return css`box-shadow: ${props.theme.shadows.md};`;
     }
   }}
   
   /* Variant for an outlined style */
   ${({ variant, theme }) => variant === 'outlined' && css`
-    border: 1px solid ${theme.colors.gray[300]}; /* Example value */
+    /* FIX: All gray colors are inside the 'neutral' object */
+    border: 1px solid ${theme.colors.neutral.gray300};
     box-shadow: none;
   `}
 `;
 
 const CardHeaderContainer = styled.div`
-  padding: 1rem 1.5rem; /* Example values */
-  border-bottom: 1px solid ${theme.colors.gray[200]};
-  font-weight: 600; /* Example value */
-  font-size: 1.125rem; /* Example value */
-  color: ${theme.colors.gray[900]};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  /* FIX: All gray colors are inside the 'neutral' object */
+  border-bottom: 1px solid ${theme.colors.neutral.gray200};
+  font-weight: ${theme.typography.fontWeights.semiBold};
+  font-size: ${theme.typography.sizes.lg};
+  color: ${theme.colors.neutral.gray900};
 `;
 
 const CardBodyContainer = styled.div<{ padding: PaddingSize }>`
-  ${({ padding }) => {
+  ${({ padding, theme }) => {
     switch (padding) {
       case 'sm':
-        return css`padding: 0.75rem;`;
+        return css`padding: ${theme.spacing.sm};`;
       case 'lg':
-        return css`padding: 1.5rem;`;
+        return css`padding: ${theme.spacing.lg};`;
       case 'none':
         return css`padding: 0;`;
       case 'md':
       default:
-        return css`padding: 1rem;`;
+        return css`padding: ${theme.spacing.md};`;
     }
   }}
 `;
 
 const CardFooterContainer = styled.div`
-  padding: 0.75rem 1rem; /* Example values */
-  border-top: 1px solid ${theme.colors.gray[200]};
-  background-color: ${theme.colors.gray[50]};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  /* FIX: All gray colors are inside the 'neutral' object */
+  border-top: 1px solid ${theme.colors.neutral.gray200};
+  background-color: ${theme.colors.neutral.gray50};
 `;
 
 
@@ -79,11 +83,9 @@ export const Card: React.FC<CardProps> = ({
   children, 
   elevation = 'medium', 
   variant = 'default',
-  // The '...props' here collects any other passed-in props, like onClick, id, etc.
   ...props 
 }) => {
   return (
-    // We pass elevation and variant for styling, and spread {...props} onto the container.
     <CardContainer elevation={elevation} variant={variant} {...props}>
       {children}
     </CardContainer>
