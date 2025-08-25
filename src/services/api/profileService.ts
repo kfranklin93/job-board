@@ -221,10 +221,12 @@ class ProfileService {
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b9fd9c13?w=150&h=150&fit=crop&crop=face',
       role: 'SEEKER' as any,
       bio: 'Passionate early childhood educator with experience in creating engaging learning environments.',
-      resume: null,
+      // FIX: Changed 'null' to 'undefined' to match the type definition.
+      resume: undefined,
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: new Date().toISOString(),
       location: 'San Francisco, CA',
+
       jobTitle: 'Early Childhood Educator',
       skills: ['Child Development', 'Classroom Management', 'Creative Arts', 'Communication'],
       certifications: ['CPR Certified', 'First Aid'],

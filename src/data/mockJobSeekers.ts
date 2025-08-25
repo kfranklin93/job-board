@@ -2,8 +2,8 @@ import { UserProfile, JobType, UserRole } from '../types/data';
 
 export const mockJobSeekers: UserProfile[] = [
   {
-    id: '1',
-    email: 'sarah.johnson@example.com',
+    id: 'user-seeker-001',
+    email: 'sarah.johnson@email.com',
     firstName: 'Sarah',
     lastName: 'Johnson',
     phone: '(555) 123-4567',
@@ -67,7 +67,7 @@ export const mockJobSeekers: UserProfile[] = [
     preferredJobTypes: [JobType.FULL_TIME, JobType.PART_TIME]
   },
   {
-    id: '2',
+    id: 'user-seeker-002',
     email: 'michael.chen@example.com',
     firstName: 'Michael',
     lastName: 'Chen',
@@ -127,7 +127,7 @@ export const mockJobSeekers: UserProfile[] = [
     preferredJobTypes: [JobType.FULL_TIME]
   },
   {
-    id: '3',
+    id: 'user-seeker-003',
     email: 'jessica.williams@example.com',
     firstName: 'Jessica',
     lastName: 'Williams',
@@ -178,7 +178,7 @@ export const mockJobSeekers: UserProfile[] = [
     preferredJobTypes: [JobType.FULL_TIME, JobType.PART_TIME]
   },
   {
-    id: '4',
+    id: 'user-seeker-004',
     email: 'amanda.taylor@example.com',
     firstName: 'Amanda',
     lastName: 'Taylor',
