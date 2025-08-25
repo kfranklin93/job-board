@@ -6,12 +6,14 @@ type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text' | 'gold' | 'da
 type ButtonSize = 'small' | 'medium' | 'large';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+  // variant?: ButtonVariant;
+  // size?: ButtonSize;
   fullWidth?: boolean;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   isLoading?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  size?: 'small' | 'medium' | 'large';
 }
 
 // Styled button with variants

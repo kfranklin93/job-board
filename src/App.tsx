@@ -261,7 +261,15 @@ function App() {
                   </MainContent>
                 </ProtectedRoute>
               } />
-              
+              <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={[UserRole.SEEKER]}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          
               {/* Root redirect */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               
