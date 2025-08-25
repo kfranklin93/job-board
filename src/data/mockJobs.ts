@@ -1,3 +1,4 @@
+// src/mockJobs.ts
 import { Job, JobType, JobStatus } from '../types/data';
 
 export const mockJobs: Job[] = [

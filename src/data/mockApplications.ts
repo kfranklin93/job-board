@@ -15,12 +15,13 @@ import { calculateMatchScore } from '../services/api/candidateMatchingEngine';
 export const mockApplications: Application[] = [
   {
     id: 'app-001',
-    jobId: 'job-001', // Lead Preschool Teacher
+    // FIX: Aligned IDs with the latest mock data files.
+    jobId: 'job1',
+    applicantId: 'user-seeker-001', // Corresponds to Sarah Johnson
     jobTitle: 'Lead Preschool Teacher',
-    organizationId: 'org-001',
+    organizationId: 'org_sunshine',
     organizationName: 'Sunshine Daycare Center',
     organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
-    applicantId: 'user-seeker-001', // Sarah Johnson
     applicantName: 'Sarah Johnson',
     applicantEmail: 'sarah.johnson@email.com',
     applicantPhone: '+1-555-0101',
@@ -33,12 +34,13 @@ export const mockApplications: Application[] = [
   },
   {
     id: 'app-002',
-    jobId: 'job-002', // Special Education Teacher  
+    // FIX: Aligned IDs
+    jobId: 'job4',
+    applicantId: 'user-seeker-002', // Corresponds to Michael Chen
     jobTitle: 'Special Education Teacher',
-    organizationId: 'org-001',
+    organizationId: 'org_sunshine',
     organizationName: 'Sunshine Daycare Center',
     organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
-    applicantId: 'user-seeker-002', // Michael Chen
     applicantName: 'Michael Chen',
     applicantEmail: 'michael.chen@email.com',
     applicantPhone: '+1-555-0102',
@@ -50,12 +52,13 @@ export const mockApplications: Application[] = [
   },
   {
     id: 'app-003',
-    jobId: 'job-003', // Assistant Teacher
-    jobTitle: 'Assistant Teacher',
-    organizationId: 'org-001', 
-    organizationName: 'Sunshine Daycare Center',
-    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
-    applicantId: 'user-seeker-003', // Jessica Williams
+    // FIX: Aligned IDs
+    jobId: 'job2',
+    applicantId: 'user-seeker-003', // Corresponds to Jessica Williams
+    jobTitle: 'Toddler Teacher',
+    organizationId: 'org_rainbow',
+    organizationName: 'Rainbow Learning Center',
+    organizationLogo: 'https://via.placeholder.com/150x150/2196F3/white?text=RLC',
     applicantName: 'Jessica Williams',
     applicantEmail: 'jessica.williams@email.com',
     applicantPhone: '+1-555-0103',
@@ -67,12 +70,13 @@ export const mockApplications: Application[] = [
   },
   {
     id: 'app-004',
-    jobId: 'job-005', // Center Director
-    jobTitle: 'Center Director',
-    organizationId: 'org-002',
-    organizationName: 'Little Learners Academy',
-    organizationLogo: 'https://via.placeholder.com/150x150/2196F3/white?text=LLA',
-    applicantId: 'user-seeker-004', // Amanda Taylor
+    // FIX: Aligned IDs
+    jobId: 'job3',
+    applicantId: 'user-seeker-004', // Corresponds to Amanda Taylor
+    jobTitle: 'Assistant Director',
+    organizationId: 'org_sunshine',
+    organizationName: 'Sunshine Daycare',
+    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
     applicantName: 'Amanda Taylor',
     applicantEmail: 'amanda.taylor@email.com',
     applicantPhone: '+1-555-0104',
@@ -81,40 +85,6 @@ export const mockApplications: Application[] = [
     lastUpdated: '2024-08-23T17:20:00Z',
     notes: 'Excellent leadership experience. Made competitive offer.',
     resume: '/uploads/amanda-taylor-resume.pdf'
-  },
-  {
-    id: 'app-005',
-    jobId: 'job-001', // Lead Preschool Teacher (another applicant)
-    jobTitle: 'Lead Preschool Teacher',
-    organizationId: 'org-001',
-    organizationName: 'Sunshine Daycare Center',
-    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
-    applicantId: 'user-seeker-002', // Michael Chen also applied
-    applicantName: 'Michael Chen',
-    applicantEmail: 'michael.chen@email.com', 
-    applicantPhone: '+1-555-0102',
-    status: ApplicationStatus.APPLIED,
-    appliedDate: '2024-08-19T09:10:00Z',
-    lastUpdated: '2024-08-19T09:10:00Z',
-    notes: 'Also applied for lead position.',
-    resume: '/uploads/michael-chen-resume.pdf'
-  },
-  {
-    id: 'app-006',
-    jobId: 'job-004', // Part-Time Infant Teacher
-    jobTitle: 'Part-Time Infant Teacher',
-    organizationId: 'org-001',
-    organizationName: 'Sunshine Daycare Center',
-    organizationLogo: 'https://via.placeholder.com/150x150/4CAF50/white?text=SDC',
-    applicantId: 'user-seeker-003', // Jessica Williams
-    applicantName: 'Jessica Williams',
-    applicantEmail: 'jessica.williams@email.com',
-    applicantPhone: '+1-555-0103',
-    status: ApplicationStatus.REJECTED,
-    appliedDate: '2024-08-16T13:25:00Z',
-    lastUpdated: '2024-08-21T10:45:00Z',
-    notes: 'Lacks specific infant care experience.',
-    resume: '/uploads/jessica-williams-resume.pdf'
   }
 ];
 
