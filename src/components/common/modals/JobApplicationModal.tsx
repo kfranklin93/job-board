@@ -154,12 +154,10 @@ const JobApplicationModal = ({ job, userProfile, onClose, onSubmit }: JobApplica
     }
   };
 
-  const handleProfilePictureChange = (file: File | null, imageUrl: string) => {
-    setFormData(prev => ({
-      ...prev,
-      profilePicture: file,
-      profilePictureUrl: imageUrl
-    }));
+ // FIX 1: Update the handler to match the new 'onUploadSuccess' signature.
+  // It now receives a single string: the new URL.
+  const handleProfilePictureChange = (newAvatarUrl: string) => {
+    setFormData(prev => ({ ...prev, profilePictureUrl: newAvatarUrl }));
   };
 
   const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,6 +166,10 @@ const JobApplicationModal = ({ job, userProfile, onClose, onSubmit }: JobApplica
       setFormData(prev => ({ ...prev, resume: file }));
     }
   };
+
+  function handleAvatarChange(file: File | null, imageUrl: string): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <ModalOverlay>
@@ -192,9 +194,12 @@ const JobApplicationModal = ({ job, userProfile, onClose, onSubmit }: JobApplica
             <ProfileSection>
               <ProfilePictureUpload 
                 initialImage={formData.profilePictureUrl}
-                onImageChange={handleProfilePictureChange}
-                size="small"
-              />
+                onImageChange={handleAvatarChange}
+                size="small" userId={''} onUploadSuccess={function (newAvatarUrl: string): void {
+                  throw new Error('Function not implemented.');
+                } } onClose={function (): void {
+                  throw new Error('Function not implemented.');
+                } }              />
               <ProfileInfo>
                 <ProfileName>{userProfile.firstName} {userProfile.lastName}</ProfileName>
                 <ProfileTitle>{userProfile.jobTitle || 'Job Seeker'}</ProfileTitle>

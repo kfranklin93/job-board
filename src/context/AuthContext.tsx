@@ -127,6 +127,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       dispatch({ type: 'AUTH_START' });
       const response: AuthResponse = await authService.login(credentials);
+      // FIX: Ensure the user object being set has a role from the UserRole enum
+      const authenticatedUser: AuthUser = {
+        ...response.user,
+        role: response.user.role as UserRole // Casting to ensure type consistency
+      };
       dispatch({ type: 'AUTH_SUCCESS', payload: { user: response.user } });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';

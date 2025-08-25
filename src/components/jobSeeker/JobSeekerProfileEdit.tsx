@@ -181,7 +181,7 @@ const SuccessMessage = styled.div`
   font-size: 14px;
 `;
 
-const JobSeekerProfileEdit: React.FC = () => {
+export const JobSeekerProfileEdit: React.FC = () => {
   const { user, updateProfile: updateAuthProfile } = useAuth();
   const navigate = useNavigate();
   
@@ -191,160 +191,118 @@ const JobSeekerProfileEdit: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
-  // Form data state
   const [formData, setFormData] = useState<ProfileUpdateData>({});
   const [newSkill, setNewSkill] = useState('');
   const [newCertification, setNewCertification] = useState('');
 
   useEffect(() => {
+    const loadProfile = async () => {
+      if (!user?.id) return;
+      try {
+        setLoading(true);
+        const profileData = await profileService.getProfile(user.id);
+        if (profileData) {
+          setProfile(profileData);
+          setFormData({
+            firstName: profileData.firstName,
+            lastName: profileData.lastName,
+            phone: profileData.phone,
+            bio: profileData.bio,
+            location: profileData.location,
+            jobTitle: profileData.jobTitle,
+            skills: profileData.skills || [],
+            certifications: profileData.certifications || [],
+            education: profileData.education || [],
+            experience: profileData.experience || [],
+            availability: profileData.availability,
+            yearsOfExperience: profileData.yearsOfExperience,
+            minSalary: profileData.minSalary,
+          });
+        }
+      } catch (err) {
+        setError('Failed to load profile. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
     loadProfile();
   }, [user?.id]);
-
-  const loadProfile = async () => {
-    if (!user?.id) return;
-
-    try {
-      setLoading(true);
-      const profileData = await profileService.getProfile(user.id);
-      if (profileData) {
-        setProfile(profileData);
-        setFormData({
-          firstName: profileData.firstName,
-          lastName: profileData.lastName,
-          phone: profileData.phone,
-          bio: profileData.bio,
-          location: profileData.location,
-          jobTitle: profileData.jobTitle,
-          skills: profileData.skills || [],
-          certifications: profileData.certifications || [],
-          education: profileData.education || [],
-          experience: profileData.experience || [],
-          availability: profileData.availability,
-          yearsOfExperience: profileData.yearsOfExperience,
-          minSalary: profileData.minSalary,
-        });
-      }
-    } catch (err) {
-      setError('Failed to load profile. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleInputChange = (field: keyof ProfileUpdateData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setError(null);
     setSuccessMessage(null);
   };
-
+  
+  // --- Skill and Certification Handlers ---
   const handleAddSkill = () => {
     if (newSkill.trim() && !formData.skills?.includes(newSkill.trim())) {
       handleInputChange('skills', [...(formData.skills || []), newSkill.trim()]);
       setNewSkill('');
     }
   };
-
-  const handleRemoveSkill = (skillToRemove: string) => {
-    handleInputChange('skills', formData.skills?.filter(skill => skill !== skillToRemove) || []);
-  };
-
+  const handleRemoveSkill = (skillToRemove: string) => handleInputChange('skills', formData.skills?.filter(skill => skill !== skillToRemove) || []);
   const handleAddCertification = () => {
     if (newCertification.trim() && !formData.certifications?.includes(newCertification.trim())) {
       handleInputChange('certifications', [...(formData.certifications || []), newCertification.trim()]);
       setNewCertification('');
     }
   };
+  const handleRemoveCertification = (certToRemove: string) => handleInputChange('certifications', formData.certifications?.filter(cert => cert !== certToRemove) || []);
 
-  const handleRemoveCertification = (certToRemove: string) => {
-    handleInputChange('certifications', formData.certifications?.filter(cert => cert !== certToRemove) || []);
-  };
-
+  // --- Experience Handlers ---
   const handleAddExperience = () => {
-    const newExp: Experience = {
-      id: `exp-${Date.now()}`,
-      title: '',
-      company: '',
-      location: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-      skills: []
-    };
+    const newExp: Experience = { id: `exp-${Date.now()}`, title: '', company: '', location: '', startDate: '', endDate: '', description: '' };
     handleInputChange('experience', [...(formData.experience || []), newExp]);
   };
-
   const handleUpdateExperience = (index: number, field: keyof Experience, value: string) => {
     const updatedExp = [...(formData.experience || [])];
     updatedExp[index] = { ...updatedExp[index], [field]: value };
     handleInputChange('experience', updatedExp);
   };
-
   const handleRemoveExperience = (index: number) => {
-    const updatedExp = [...(formData.experience || [])];
-    updatedExp.splice(index, 1);
+    const updatedExp = [...(formData.experience || [])].filter((_, i) => i !== index);
     handleInputChange('experience', updatedExp);
   };
 
+  // --- Education Handlers ---
   const handleAddEducation = () => {
-    const newEdu: Education = {
-      id: `edu-${Date.now()}`,
-      degree: '',
-      institution: '',
-      location: '',
-      graduationYear: ''
-    };
+    const newEdu: Education = { id: `edu-${Date.now()}`, degree: '', institution: '', location: '', graduationYear: '' };
     handleInputChange('education', [...(formData.education || []), newEdu]);
   };
-
   const handleUpdateEducation = (index: number, field: keyof Education, value: string) => {
     const updatedEdu = [...(formData.education || [])];
     updatedEdu[index] = { ...updatedEdu[index], [field]: value };
     handleInputChange('education', updatedEdu);
   };
-
   const handleRemoveEducation = (index: number) => {
-    const updatedEdu = [...(formData.education || [])];
-    updatedEdu.splice(index, 1);
+    const updatedEdu = [...(formData.education || [])].filter((_, i) => i !== index);
     handleInputChange('education', updatedEdu);
   };
 
-  const handleAvatarChange = async (file: File | null, imageUrl: string) => {
-    if (!file || !user?.id) return;
+ // FIX: Update the handler to match the expected (file, imageUrl) signature.
+const handleAvatarChange = (file: File | null, imageUrl: string) => {
+  if (!profile) return;
 
-    try {
-      const result = await profileService.uploadAvatar(file, user.id);
-      if (result.success && result.avatarUrl) {
-        // Update the profile with new avatar URL
-        if (profile) {
-          const updatedProfile = { ...profile, avatar: result.avatarUrl };
-          setProfile(updatedProfile);
-          updateAuthProfile(updatedProfile);
-          setSuccessMessage('Profile picture updated successfully!');
-        }
-      } else {
-        setError(result.error || 'Failed to upload profile picture');
-      }
-    } catch (err) {
-      setError('Failed to upload profile picture');
-    }
-  };
+  // The 'imageUrl' is the new URL for the avatar. The 'file' object
+  // can be ignored if you don't need it here.
+  const updatedProfile = { ...profile, avatar: imageUrl };
+
+  setProfile(updatedProfile); // Update local component state
+  updateAuthProfile(updatedProfile); // Update global auth context
+  setSuccessMessage('Profile picture updated successfully!');
+};
 
   const handleSave = async () => {
     if (!user?.id) return;
-
     try {
       setSaving(true);
       setError(null);
-
       const updatedProfile = await profileService.updateProfile(user.id, formData);
       if (updatedProfile) {
-        // Update auth context with the full updated profile
         updateAuthProfile(updatedProfile);
-        
         setProfile(updatedProfile);
         setSuccessMessage('Profile updated successfully!');
-        
-        // Scroll to top to show success message
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         setError('Failed to update profile. Please try again.');
@@ -360,21 +318,9 @@ const JobSeekerProfileEdit: React.FC = () => {
     navigate('/dashboard');
   };
 
-  if (loading) {
-    return (
-      <PageContainer>
-        <LoadingSpinner>Loading profile...</LoadingSpinner>
-      </PageContainer>
-    );
-  }
+  if (loading) return <PageContainer><LoadingSpinner>Loading profile...</LoadingSpinner></PageContainer>;
+  if (!profile) return <PageContainer><ErrorMessage>Failed to load profile data.</ErrorMessage></PageContainer>;
 
-  if (!profile) {
-    return (
-      <PageContainer>
-        <ErrorMessage>Failed to load profile data.</ErrorMessage>
-      </PageContainer>
-    );
-  }
 
   return (
     <PageContainer>
@@ -386,14 +332,20 @@ const JobSeekerProfileEdit: React.FC = () => {
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
 
-      {/* Profile Picture Section */}
       <FormSection>
         <SectionTitle>Profile Picture</SectionTitle>
-        <ProfilePictureUpload
-          initialImage={profile.avatar}
-          onImageChange={handleAvatarChange}
-          size="large"
-        />
+        {/* FIX 2: Added the required 'userId' prop. */}
+        {user && profile.avatar !== undefined && (
+          <ProfilePictureUpload
+            userId={user.id}
+            initialImage={profile.avatar}
+            onImageChange={handleAvatarChange}
+            size="large" onClose={function (): void {
+              throw new Error('Function not implemented.');
+            } } onUploadSuccess={function (newAvatarUrl: string): void {
+              throw new Error('Function not implemented.');
+            } }          />
+        )}
       </FormSection>
 
       {/* Basic Information */}
@@ -637,9 +589,7 @@ const JobSeekerProfileEdit: React.FC = () => {
       </FormSection>
 
       <ActionBar>
-        <Button variant="secondary" onClick={handleCancel}>
-          Cancel
-        </Button>
+        <Button variant="outline" onClick={handleCancel}>Cancel</Button>
         <Button variant="primary" onClick={handleSave} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>

@@ -12,7 +12,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   isLoading?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'text';
   size?: 'small' | 'medium' | 'large';
 }
 
