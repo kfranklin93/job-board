@@ -5,7 +5,10 @@ import styled from 'styled-components';
 import { CandidateApplication, ApplicationStatus } from '../../types/data';
 import { Card } from '../common/ui';
 
-const CardContainer = styled(Card)<{ isSelected: boolean }>`
+const CardContainer = styled.div<{ isSelected: boolean }>`
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   cursor: pointer;
   border: 2px solid ${({ isSelected, theme }) => 

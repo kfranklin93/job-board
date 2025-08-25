@@ -92,7 +92,7 @@ export class AIReportGenerator {
     
     // Overall Score
     addText('Overall Match Score', 20, 14, 'bold');
-    const scoreColor = matchResult.score >= 80 ? [76, 175, 80] : 
+    const scoreColor: [number, number, number] = matchResult.score >= 80 ? [76, 175, 80] : 
                       matchResult.score >= 60 ? [255, 193, 7] : [244, 67, 54];
     pdf.setTextColor(...scoreColor);
     addText(`${matchResult.score}/100`, 20, 24, 'bold');

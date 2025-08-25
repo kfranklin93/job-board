@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../../context/AuthContext';
-import { UserRole } from '../../types/data';
+import { UserProfile, Job } from '../../types/data';
+import { profileService } from '../../services/api/profileService';
+import { findBestJobMatches } from '../../services/api/candidateMatchingEngine';
+import { mockJobs } from '../../data/mockJobs';
 
 const DashboardContainer = styled.div`
   max-width: 1200px;
@@ -151,10 +155,88 @@ const QuickAction = styled.div`
   }
 `;
 
+const MatchBadge = styled.span<{ score: number }>`
+  background: ${({ score, theme }) => {
+    if (score >= 90) return theme.colors.success.main;
+    if (score >= 80) return theme.colors.warning.main;
+    if (score >= 70) return theme.colors.info.main;
+    return theme.colors.error.main;
+  }};
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+`;
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 40px;
+  color: #666;
+`;
+
 export const JobSeekerDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [recommendedJobs, setRecommendedJobs] = useState<Array<Job & { matchScore: number }>>([]);
+  const [profileCompletion, setProfileCompletion] = useState({ percentage: 0, missingFields: [] as string[] });
+  const [loading, setLoading] = useState(true);
 
-  // Mock data - replace with real data from API
+  useEffect(() => {
+    loadDashboardData();
+  }, [user?.id]);
+
+  const loadDashboardData = async () => {
+    if (!user?.id) return;
+
+    try {
+      setLoading(true);
+      
+      // Load user profile
+      const userProfile = await profileService.getProfile(user.id);
+      if (userProfile) {
+        setProfile(userProfile);
+        
+        // Calculate profile completion
+        const completion = profileService.calculateProfileCompletion(userProfile);
+        setProfileCompletion(completion);
+        
+        // Get recommended jobs using matching engine
+        const jobMatches = findBestJobMatches(userProfile, mockJobs);
+        const jobsWithScores = jobMatches.map(match => ({
+          ...match.job,
+          matchScore: match.matchResult.score
+        }));
+        setRecommendedJobs(jobsWithScores.slice(0, 5)); // Show top 5
+      }
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'search':
+        navigate('/jobs');
+        break;
+      case 'profile':
+        navigate('/profile/edit');
+        break;
+      case 'resume':
+        navigate('/profile/edit');
+        break;
+      case 'applications':
+        navigate('/applications');
+        break;
+    }
+  };
+
+  // Mock stats - in real app, these would come from API
   const stats = {
     applicationsSubmitted: 8,
     interviewsScheduled: 3,
@@ -162,32 +244,13 @@ export const JobSeekerDashboard: React.FC = () => {
     jobsBookmarked: 12,
   };
 
-  const recommendedJobs = [
-    {
-      id: '1',
-      title: 'Early Childhood Educator',
-      company: 'Sunshine Daycare Center',
-      location: 'Seattle, WA',
-      salary: '$35,000 - $45,000',
-      posted: '2 days ago',
-    },
-    {
-      id: '2',
-      title: 'Assistant Teacher',
-      company: 'Little Learners Academy',
-      location: 'Bellevue, WA',
-      salary: '$32,000 - $38,000',
-      posted: '1 week ago',
-    },
-    {
-      id: '3',
-      title: 'Lead Teacher',
-      company: 'Growing Minds Childcare',
-      location: 'Redmond, WA',
-      salary: '$40,000 - $50,000',
-      posted: '3 days ago',
-    },
-  ];
+  if (loading) {
+    return (
+      <DashboardContainer>
+        <LoadingMessage>Loading your dashboard...</LoadingMessage>
+      </DashboardContainer>
+    );
+  }
 
   return (
     <DashboardContainer>
@@ -222,33 +285,46 @@ export const JobSeekerDashboard: React.FC = () => {
             Based on your profile and preferences
           </p>
           
-          {recommendedJobs.map((job) => (
-            <JobCard key={job.id}>
-              <h4>{job.title}</h4>
-              <div className="company">{job.company}</div>
-              <div className="location">{job.location}</div>
-              <div className="salary">{job.salary}</div>
-              <ActionButton>Apply Now</ActionButton>
-            </JobCard>
-          ))}
+          {recommendedJobs.length > 0 ? (
+            recommendedJobs.map((job) => (
+              <JobCard key={job.id}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ flex: 1 }}>
+                    <h4>{job.title}</h4>
+                    <div className="company">{job.organizationName}</div>
+                    <div className="location">{job.location}</div>
+                    <div className="salary">{job.salary}</div>
+                  </div>
+                  <MatchBadge score={job.matchScore}>
+                    {Math.round(job.matchScore)}% match
+                  </MatchBadge>
+                </div>
+                <ActionButton>Apply Now</ActionButton>
+              </JobCard>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              Complete your profile to see personalized job recommendations
+            </div>
+          )}
         </MainContent>
 
         <Sidebar>
           <SidebarCard>
             <h3>Quick Actions</h3>
-            <QuickAction>
+            <QuickAction onClick={() => handleQuickAction('search')}>
               <span>🔍</span>
               <span>Search Jobs</span>
             </QuickAction>
-            <QuickAction>
+            <QuickAction onClick={() => handleQuickAction('profile')}>
               <span>📝</span>
               <span>Update Profile</span>
             </QuickAction>
-            <QuickAction>
+            <QuickAction onClick={() => handleQuickAction('resume')}>
               <span>📄</span>
               <span>Upload Resume</span>
             </QuickAction>
-            <QuickAction>
+            <QuickAction onClick={() => handleQuickAction('applications')}>
               <span>📊</span>
               <span>View Applications</span>
             </QuickAction>
@@ -258,7 +334,7 @@ export const JobSeekerDashboard: React.FC = () => {
             <h3>Profile Completion</h3>
             <div style={{ marginBottom: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span>85% Complete</span>
+                <span>{profileCompletion.percentage}% Complete</span>
               </div>
               <div style={{ 
                 height: '8px', 
@@ -268,14 +344,25 @@ export const JobSeekerDashboard: React.FC = () => {
               }}>
                 <div style={{ 
                   height: '100%', 
-                  width: '85%', 
-                  background: '#27ae60' 
+                  width: `${profileCompletion.percentage}%`, 
+                  background: profileCompletion.percentage >= 80 ? '#27ae60' : '#f39c12'
                 }} />
               </div>
             </div>
             <p style={{ fontSize: '0.9rem', color: '#666' }}>
-              Complete your profile to get better job matches
+              {profileCompletion.percentage < 100 
+                ? `Complete ${profileCompletion.missingFields.length} more section${profileCompletion.missingFields.length !== 1 ? 's' : ''} to improve job matches`
+                : 'Your profile is complete!'
+              }
             </p>
+            {profileCompletion.percentage < 100 && (
+              <ActionButton 
+                onClick={() => handleQuickAction('profile')}
+                style={{ marginTop: '10px', fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}
+              >
+                Complete Profile
+              </ActionButton>
+            )}
           </SidebarCard>
 
           <SidebarCard>

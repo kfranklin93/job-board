@@ -23,6 +23,9 @@ import { MatchingDemo } from './components/matching/MatchingDemo';
 // Daycare Components
 import CandidateManagementDashboard from './components/daycare/CandidateManagementDashboard';
 
+// Job Seeker Components
+import JobSeekerProfileEdit from './components/jobSeeker/JobSeekerProfileEdit';
+
 // Layout components
 import styled from 'styled-components';
 
@@ -245,6 +248,16 @@ function App() {
                   <Navigation />
                   <MainContent>
                     <CandidateManagementDashboard />
+                  </MainContent>
+                </ProtectedRoute>
+              } />
+
+              {/* Job Seeker Routes */}
+              <Route path="/profile/edit" element={
+                <ProtectedRoute allowedRoles={[UserRole.SEEKER]}>
+                  <Navigation />
+                  <MainContent>
+                    <JobSeekerProfileEdit />
                   </MainContent>
                 </ProtectedRoute>
               } />
